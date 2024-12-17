@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
+            margin: 0;
+        }
+
+        .blink {
+            animation: blink 0.7s infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        .highlight-stabilo {
+            background-color: white; 
+            color: black; 
+        }
+
+        .background-moving {
+            background: linear-gradient(120deg, rgba(0, 0, 139, 0.3), rgba(135, 206, 250, 0.3), rgba(147, 112, 219, 0.3));
+            background-size: 300% 300%; /* Gradasi dari warna yang sama tapi mengalir */
+            animation: backgroundScroll 10s infinite ease-in-out;
+        }
+
+        @keyframes backgroundScroll {
+            0% { background-position: 0 0; }
+            50% { background-position: 100% 100%; }
+            100% { background-position: 0 0; }
+        }
+
+        /* Animasi muncul dari atas untuk navbar */
+        @keyframes slideDown {
+            0% { transform: translateY(-100%); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        nav {
+            animation: slideDown 1s ease-in-out forwards;
+        }
+
+        /* Animasi muncul dari bawah */
+        @keyframes fadeInUp {
+            0% { transform: translateY(50px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 1s ease-in-out forwards;
+        }
+
+        .fade-in-up-delay {
+            animation: fadeInUp 1s ease-in-out forwards;
+            animation-delay: 0.5s;
+        }
+
+        /* Sembunyikan blinking cursor secara default */
+        #blinking-cursor {
+            visibility: hidden;
+        }
+
+        /* Animasi underline pada navbar link */
+        nav ul li a {
+            position: relative;
+            color: blue-600;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: blue-600;
+            transition: width 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: blue-800;
+        }
+
+        nav ul li a:hover::after {
+            width: 100%; /* Tampilkan garis bawah penuh ketika hover */
+        }
+
+        /* Media Queries untuk Responsivitas */
+        @media (max-width: 768px) {
+            h1.text-6xl {
+                font-size: 2rem; /* Sesuaikan ukuran teks untuk perangkat dengan lebar layar <= 768px */
+            }
+
+            h1.text-5xl {
+                font-size: 1.5rem; /* Sesuaikan ukuran teks untuk subheading */
+            }
+
+            p.text-xl {
+                font-size: 1rem; /* Ukuran teks tambahan lebih kecil */
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1.text-6xl {
+                font-size: 1.8rem; /* Ukuran lebih kecil untuk perangkat dengan lebar layar <= 480px */
+            }
+
+            h1.text-5xl {
+                font-size: 1.2rem; /* Ukuran subheading lebih kecil */
+            }
+
+            p.text-xl {
+                font-size: 0.9rem; /* Ukuran teks tambahan lebih kecil */
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 background-moving">
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-md fixed w-full z-10 opacity-0">
+        <div class="container mx-auto flex justify-between items-center p-4">
+            <div class="text-2xl font-bold text-blue-600">AR</div>
+            <ul class="flex space-x-6">
+                <li><a href="#home" class="hover:text-blue-600">Home</a></li>
+                <li><a href="#about" class="hover:text-blue-600">About</a></li>
+                <li><a href="#projects" class="hover:text-blue-600">Projects</a></li>
+                <li><a href="#contact" class="hover:text-blue-600">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="h-screen bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center text-white">
+        <div class="text-center">
+            <h1 class="text-6xl font-bold mb-4 fade-in-up">
+                <span class="text-white">I'm </span>
+                <span class="highlight-stabilo">Cavan Rizal</span>
+            </h1>
+            <h1 class="text-5xl font-bold mb-4 fade-in-up-delay">Welcome to My Website</h1>
+            <p class="text-xl">
+                <span id="typed-text"></span>
+                <span id="blinking-cursor">|</span>
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-center py-6 bg-gray-900 text-white fade-in-up opacity-0">
+        <p>&copy; 2024 Your Name. All Rights Reserved.</p>
+    </footer>
+
+    <!-- Typing Effect Script -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Tambahkan kelas animasi untuk navbar dan section
+            const nav = document.querySelector('nav');
+            const sections = document.querySelectorAll('.opacity-0');
+            const blinkingCursor = document.getElementById('blinking-cursor');
+
+            // Fungsi untuk memulai efek ketik
+            function startTypingEffect() {
+                const texts = ['Electromedical Engineering', 'Web Developer', 'UI/UX Enthusiast', 'Coming Soon!!'];
+                let index = 0;
+                let charIndex = 0;
+                const typedTextElement = document.getElementById('typed-text');
+
+                function typeText() {
+                    if (charIndex < texts[index].length) {
+                        typedTextElement.textContent += texts[index].charAt(charIndex);
+                        charIndex++;
+                        setTimeout(typeText, 100);
+                    } else {
+                        setTimeout(deleteText, 2000);
+                    }
+                }
+
+                function deleteText() {
+                    if (charIndex > 0) {
+                        typedTextElement.textContent = texts[index].substring(0, charIndex - 1);
+                        charIndex--;
+                        setTimeout(deleteText, 50);
+                    } else {
+                        index++;
+                        if (index >= texts.length) {
+                            index = 0;
+                        }
+                        setTimeout(typeText, 50);
+                    }
+                }
+
+                // Mulai animasi ketik
+                typeText();
+            }
+
+            // Tampilkan navbar dengan animasi
+            nav.style.opacity = '1';
+
+            // Fungsi untuk menampilkan semua section dengan animasi
+            function animateSections() {
+                return new Promise((resolve) => {
+                    sections.forEach((section, index) => {
+                        setTimeout(() => {
+                            section.classList.remove('opacity-0');
+                            if (index === sections.length - 1) resolve();
+                        }, index * 300);
+                    });
+                });
+            }
+
+            // Jalankan animasi section terlebih dahulu, lalu tunggu 5 detik untuk memulai efek ketik dan blink
+            animateSections().then(() => {
+                setTimeout(() => {
+                    blinkingCursor.style.visibility = 'visible';
+                    blinkingCursor.classList.add('blink');
+                    startTypingEffect();
+                }, 1200);
+            });
+
+            // Animasi background scroll untuk warna interaktif
+            window.addEventListener('scroll', () => {
+                let scrollY = window.scrollY;
+                let scrollHeight = document.body.scrollHeight - window.innerHeight;
+                let scrollProgress = scrollY / scrollHeight;
+
+                const bgColor = `linear-gradient(120deg, rgba(${Math.min(255, 255 * (1 - scrollProgress))}, ${Math.min(255, 206 + 49 * scrollProgress)}, ${Math.min(255, 219 + 36 * scrollProgress)}, 0.3), rgba(${Math.min(255, 0 + 128 * scrollProgress)}, ${Math.min(255, 206 + 49 * scrollProgress)}, ${Math.min(255, 219 + 36 * scrollProgress)}, 0.3))`;
+
+                document.body.style.background = bgColor;
+            });
+        });
+    </script>
+</body>
+</html>
